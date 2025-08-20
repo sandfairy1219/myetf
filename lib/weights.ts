@@ -5,7 +5,7 @@ export const HOLDINGS: Holding[] = [
   { ticker: "AVGO", sector: "Technology", weight: 8.9 },
   { ticker: "ORCL", sector: "Technology", weight: 4.3 },
 
-  { ticker: "BRK.B", sector: "Financials", weight: 10.1 },
+  { ticker: "BRK-B", sector: "Financials", weight: 10.1 },
   { ticker: "HOOD", sector: "Financials", weight: 9.8 },
   { ticker: "JPM",  sector: "Financials", weight: 8.9 },
   { ticker: "COIN", sector: "Financials", weight: 4.0 },
