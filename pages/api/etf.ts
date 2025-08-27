@@ -21,8 +21,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const series: Record<string, Row[]> = {};
 
     await Promise.all(universe.map(async (t) => {
-      const rows = await yahooFinance.historical(t, { period1: rangeStart, period2: today, interval: "1d" });
-      series[t] = rows.filter(r=>r.close!=null).map(r => ({ date: ymd(new Date(r.date)), close: r.close! }));
+      try {
+        const rows = await yahooFinance.historical(t, { period1: rangeStart, period2: today, interval: "1d" });
+        series[t] = rows.filter(r=>r.close!=null).map(r => ({ date: ymd(new Date(r.date)), close: r.close! }));
+      } catch (error) {
+        console.error(`Error fetching data for ${t}:`, error);
+        // 에러가 발생한 티커는 빈 배열로 설정
+        series[t] = [];
+      }
     }));
 
     // base price on/after startDate

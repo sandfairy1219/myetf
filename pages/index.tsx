@@ -108,6 +108,120 @@ export default function Home() {
         </svg>
       </div>
 
+      <div style={{ marginTop: 20, background: "#101010", borderRadius: 12, padding: 16 }}>
+        <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>포트폴리오 비중 및 변동률 계산</div>
+        
+        {/* 개별 종목 상세 정보 */}
+        <div style={{ marginBottom: 16 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8, color: "#4caf50" }}>개별 종목 비중 및 수익률</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "8px" }}>
+            {HOLDINGS.map(holding => {
+              const stockData = data.latest[holding.ticker];
+              const pct = stockData?.pct ?? 0;
+              const normalizedWeight = (holding.weight / HOLDINGS.reduce((sum, h) => sum + h.weight, 0)) * 100;
+              const weightedReturn = (normalizedWeight / 100) * pct;
+              
+              return (
+                <div key={holding.ticker} style={{ 
+                  background: "#1a1a1a", 
+                  padding: "8px 12px", 
+                  borderRadius: "6px",
+                  border: `1px solid ${pct >= 0 ? "#4caf50" : "#f44336"}20`
+                }}>
+                  <div style={{ fontWeight: 600, fontSize: 14 }}>{holding.ticker}</div>
+                  <div style={{ fontSize: 12, opacity: 0.8 }}>{holding.sector}</div>
+                  <div style={{ fontSize: 13, marginTop: 4 }}>
+                    비중: {normalizedWeight.toFixed(1)}%
+                  </div>
+                  <div style={{ 
+                    fontSize: 13, 
+                    color: pct >= 0 ? "#4caf50" : "#f44336" 
+                  }}>
+                    수익률: {pct >= 0 ? "+" : ""}{pct.toFixed(2)}%
+                  </div>
+                  <div style={{ fontSize: 12, opacity: 0.9 }}>
+                    기여도: {weightedReturn >= 0 ? "+" : ""}{weightedReturn.toFixed(3)}%
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* 전체 계산 요약 */}
+        <div style={{ borderTop: "1px solid #333", paddingTop: 16 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8, color: "#4caf50" }}>전체 포트폴리오 계산</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "12px" }}>
+            <div style={{ background: "#1a1a1a", padding: "12px", borderRadius: "8px" }}>
+              <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>총 비중</div>
+              <div style={{ fontSize: 18, color: "#4caf50" }}>
+                {HOLDINGS.reduce((sum, h) => sum + h.weight, 0).toFixed(1)}%
+              </div>
+            </div>
+            
+            <div style={{ background: "#1a1a1a", padding: "12px", borderRadius: "8px" }}>
+              <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>가중평균 수익률</div>
+              <div style={{ 
+                fontSize: 18, 
+                color: dailyChange >= 0 ? "#4caf50" : "#f44336" 
+              }}>
+                {dailyChange >= 0 ? "+" : ""}{dailyChange.toFixed(3)}%
+              </div>
+            </div>
+            
+            <div style={{ background: "#1a1a1a", padding: "12px", borderRadius: "8px" }}>
+              <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>포트폴리오 지수</div>
+              <div style={{ fontSize: 18, color: "#4caf50" }}>
+                {level.toFixed(4)}
+              </div>
+              <div style={{ fontSize: 12, opacity: 0.8 }}>
+                기준일: {data.startDate} (100.0000)
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* 섹터별 기여도 */}
+        <div style={{ borderTop: "1px solid #333", paddingTop: 16, marginTop: 16 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8, color: "#4caf50" }}>섹터별 기여도</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "8px" }}>
+            {Object.entries(
+              HOLDINGS.reduce((sectors, holding) => {
+                const stockData = data.latest[holding.ticker];
+                const pct = stockData?.pct ?? 0;
+                const normalizedWeight = (holding.weight / HOLDINGS.reduce((sum, h) => sum + h.weight, 0)) * 100;
+                const contribution = (normalizedWeight / 100) * pct;
+                
+                if (!sectors[holding.sector]) {
+                  sectors[holding.sector] = { weight: 0, contribution: 0 };
+                }
+                sectors[holding.sector].weight += normalizedWeight;
+                sectors[holding.sector].contribution += contribution;
+                return sectors;
+              }, {} as Record<string, { weight: number; contribution: number }>)
+            ).map(([sector, data]) => (
+              <div key={sector} style={{ 
+                background: "#1a1a1a", 
+                padding: "10px", 
+                borderRadius: "6px",
+                border: `1px solid ${data.contribution >= 0 ? "#4caf50" : "#f44336"}20`
+              }}>
+                <div style={{ fontWeight: 600, fontSize: 14 }}>{sector}</div>
+                <div style={{ fontSize: 13, marginTop: 4 }}>
+                  비중: {data.weight.toFixed(1)}%
+                </div>
+                <div style={{ 
+                  fontSize: 13, 
+                  color: data.contribution >= 0 ? "#4caf50" : "#f44336" 
+                }}>
+                  기여도: {data.contribution >= 0 ? "+" : ""}{data.contribution.toFixed(3)}%
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div style={{ marginTop: 16, fontSize: 14, opacity: 0.8 }}>
         Universe: {HOLDINGS.map(h=>h.ticker).join(", ")}
       </div>

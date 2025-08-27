@@ -21,4 +21,4 @@ export const HOLDINGS: Holding[] = [
   { ticker: "PM",   sector: "Consumer Defensive", weight: 8.7 },
 ];
 
-export const START_DATE = new Date(); // today => base index = 100
+export const START_DATE = new Date('2025-08-20'); // 일주일 전 => base index = 100
