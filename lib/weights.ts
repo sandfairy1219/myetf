@@ -1,12 +1,12 @@
 export type Holding = { ticker: string; sector: string; weight: number };
 
 export const HOLDINGS: Holding[] = [
-  { ticker: "NVDA", sector: "Technology", weight: 29.7 },
-  { ticker: "PLTR", sector: "Technology", weight: 15.3 },
-  { ticker: "AVGO", sector: "Technology", weight: 8.9 },
+  { ticker: "NVDA", sector: "Technology", weight: 25.7 },
+  { ticker: "PLTR", sector: "Technology", weight: 12.3 },
+  { ticker: "AVGO", sector: "Technology", weight: 7.9 },
   { ticker: "ORCL", sector: "Technology", weight: 4.3 },
 
-  
+  { ticker: "BRK-B", sector: "Insurance", weight: 9},
   { ticker: "HOOD", sector: "Financials", weight: 9.8 },
   { ticker: "JPM",  sector: "Financials", weight: 8.9 },
   { ticker: "COIN", sector: "Financials", weight: 4.0 },
