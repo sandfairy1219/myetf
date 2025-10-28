@@ -19,7 +19,7 @@ export const HOLDINGS: Holding[] = [
   { ticker: "RKLB", sector: "Industrials", weight: 2.3 },
 
 
-  { ticker: "PM",   sector: "Consumer Defensive", weight: 8.7 },
+  { ticker: "KO",   sector: "Consumer Defensive", weight: 8.7 },
 ];
 
 export const START_DATE = new Date('2025-08-20'); // 일주일 전 => base index = 100
